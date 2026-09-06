@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.lexigravity.LexiGravityServer
+Class-Path: sqlite-jdbc.jar

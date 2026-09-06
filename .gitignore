@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Java / Compilation
+backend/out/
+backend/*.class
+
+# Dependencies & Build Artifacts (JARs)
+*.jar
+backend/*.jar
+
+# Local Database
+backend/lexigravity.db
+*.db
+*.sqlite
+
+# IDEs
+.idea/
+.vscode/
+*.iml

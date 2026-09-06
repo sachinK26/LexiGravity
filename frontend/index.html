@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiGravity — Type or Fall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== SCREEN: HOME ===== -->
+<div id="screen-home" class="screen active">
+  <div class="home-bg">
+    <canvas id="particle-canvas"></canvas>
+    <div class="scanlines"></div>
+  </div>
+
+  <div class="home-content">
+    <div class="logo-wrap">
+      <div class="logo-glitch" data-text="LEXI">LEXI</div>
+      <div class="logo-sub-wrap">
+        <span class="logo-gravity">GRAVITY</span>
+        <div class="logo-tagline">TYPE OR FALL</div>
+      </div>
+    </div>
+
+    <div class="home-panel">
+      <div class="input-group">
+        <label>PLAYER NAME</label>
+        <input type="text" id="player-name" placeholder="Enter your callsign..." maxlength="20">
+      </div>
+
+      <div class="difficulty-select">
+        <label>STARTING MODE</label>
+        <div class="diff-buttons">
+          <button class="diff-btn active" data-diff="1">ROOKIE</button>
+          <button class="diff-btn" data-diff="3">PRO</button>
+          <button class="diff-btn" data-diff="5">LEGEND</button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-start">
+        <span class="btn-text">LAUNCH GAME</span>
+        <div class="btn-glow"></div>
+      </button>
+
+      <div class="home-nav">
+        <button class="btn-nav" id="btn-leaderboard-home">🏆 LEADERBOARD</button>
+        <button class="btn-nav" id="btn-how-to">📖 HOW TO PLAY</button>
+      </div>
+    </div>
+
+    <div class="team-credits">
+      <span>TEAM:</span> Ashwin K — 24PC04 &nbsp;|&nbsp; Sachin Saravan K — 24PC31
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: HOW TO PLAY ===== -->
+<div id="screen-howto" class="screen">
+  <div class="modal-bg"></div>
+  <div class="howto-box">
+    <h2 class="neon-title">HOW TO PLAY</h2>
+    <div class="howto-grid">
+      <div class="howto-item"><div class="howto-icon">⌨️</div><div><strong>Type words</strong> as they fall from the top before they hit the ground</div></div>
+      <div class="howto-item"><div class="howto-icon">🔥</div><div><strong>Build combos</strong> by typing correct words consecutively for score multipliers</div></div>
+      <div class="howto-item"><div class="howto-icon">⚡</div><div><strong>Collect power-ups</strong> — Slow Motion, Freeze, Clear Screen appear randomly</div></div>
+      <div class="howto-item"><div class="howto-icon">📈</div><div><strong>Difficulty rises</strong> — words speed up and get harder the better you play</div></div>
+      <div class="howto-item"><div class="howto-icon">💀</div><div><strong>3 lives</strong> — lose one every time a word touches the bottom</div></div>
+      <div class="howto-item"><div class="howto-icon">🏆</div><div><strong>Top the global leaderboard</strong> and claim the #1 spot</div></div>
+    </div>
+    <div class="powerup-legend">
+      <h3>POWER-UPS</h3>
+      <div class="pu-row"><span class="pu-badge slow">🐌 SLOW</span><span>Halves falling speed for 5 seconds</span></div>
+      <div class="pu-row"><span class="pu-badge freeze">❄️ FREEZE</span><span>Stops all words for 3 seconds</span></div>
+      <div class="pu-row"><span class="pu-badge clear">💥 CLEAR</span><span>Destroys all current words instantly</span></div>
+    </div>
+    <button class="btn-primary" id="btn-back-home">← BACK</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: GAME ===== -->
+<div id="screen-game" class="screen">
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-left">
+      <div class="hud-stat"><span class="hud-label">SCORE</span><span class="hud-val" id="hud-score">0</span></div>
+      <div class="hud-stat"><span class="hud-label">LEVEL</span><span class="hud-val" id="hud-level">1</span></div>
+    </div>
+    <div class="hud-center">
+      <div class="lives-display" id="lives-display">
+        <span class="life-icon">♥</span><span class="life-icon">♥</span><span class="life-icon">♥</span>
+      </div>
+      <div class="active-powerups" id="active-powerups"></div>
+    </div>
+    <div class="hud-right">
+      <div class="hud-stat"><span class="hud-label">WPM</span><span class="hud-val" id="hud-wpm">0</span></div>
+      <div class="hud-stat combo-stat"><span class="hud-label">COMBO</span><span class="hud-val" id="hud-combo">x1</span></div>
+    </div>
+  </div>
+
+  <!-- Combo banner -->
+  <div id="combo-banner" class="combo-banner hidden"></div>
+
+  <!-- Danger zone indicator -->
+  <div id="danger-zone"></div>
+
+  <!-- Word field -->
+  <div id="word-field"></div>
+
+  <!-- Power-up pickup -->
+  <div id="powerup-pickup" class="hidden"></div>
+
+  <!-- Input area -->
+  <div id="input-area">
+    <div id="input-wrapper">
+      <input type="text" id="game-input" placeholder="TYPE HERE..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <div id="input-underline"></div>
+    </div>
+    <div id="accuracy-bar-wrap">
+      <div id="accuracy-label">ACC <span id="hud-accuracy">100%</span></div>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <button id="btn-pause">⏸</button>
+
+  <!-- Pause overlay -->
+  <div id="pause-overlay" class="hidden">
+    <div class="pause-box">
+      <div class="pause-title">PAUSED</div>
+      <button class="btn-primary" id="btn-resume">▶ RESUME</button>
+      <button class="btn-nav" id="btn-quit">✕ QUIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: GAME OVER ===== -->
+<div id="screen-gameover" class="screen">
+  <div class="go-bg"></div>
+  <div class="go-content">
+    <div class="go-title" id="go-title">GAME OVER</div>
+
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val" id="go-score">0</div><div class="go-stat-label">FINAL SCORE</div></div>
+      <div class="go-stat"><div class="go-stat-val" id="go-wpm">0</div><div class="go-stat-label">WPM</div></div>
+      <div class="go-stat"><div class="go-stat-val" id="go-acc">0%</div><div class="go-stat-label">ACCURACY</div></div>
+      <div class="go-stat"><div class="go-stat-val" id="go-combo">0</div><div class="go-stat-label">BEST COMBO</div></div>
+      <div class="go-stat"><div class="go-stat-val" id="go-level">1</div><div class="go-stat-label">LEVEL REACHED</div></div>
+      <div class="go-stat"><div class="go-stat-val" id="go-words">0</div><div class="go-stat-label">WORDS TYPED</div></div>
+    </div>
+
+    <div class="go-rank" id="go-rank"></div>
+
+    <div class="go-actions">
+      <button class="btn-primary" id="btn-play-again">↺ PLAY AGAIN</button>
+      <button class="btn-nav" id="btn-leaderboard-go">🏆 LEADERBOARD</button>
+      <button class="btn-nav" id="btn-home-go">⌂ HOME</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: LEADERBOARD ===== -->
+<div id="screen-leaderboard" class="screen">
+  <div class="lb-bg"></div>
+  <div class="lb-content">
+    <h2 class="neon-title">🏆 GLOBAL LEADERBOARD</h2>
+    <div class="lb-table-wrap">
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th>RANK</th><th>PLAYER</th><th>SCORE</th><th>WPM</th><th>ACC</th><th>COMBO</th><th>LVL</th>
+          </tr>
+        </thead>
+        <tbody id="lb-body">
+          <tr><td colspan="7" class="lb-loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="lb-actions">
+      <button class="btn-nav" id="btn-lb-back">← BACK</button>
+      <button class="btn-nav" id="btn-lb-refresh">↺ REFRESH</button>
+    </div>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
